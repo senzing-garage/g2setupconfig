@@ -3,7 +3,6 @@
 import argparse
 import pathlib
 import sys
-
 import G2Paths
 from senzing import (G2Config, G2ConfigMgr, G2Exception, G2IniParams, G2ModuleException)
 
@@ -24,6 +23,7 @@ def setup_config(ini_params, auto_mode):
                 print('\nWARN: Not replacing configuration in database.')
                 return -1
         else:
+
             if not input('\nInstalling template configuration to database. Do you want to continue (yes/no)?  ') in ['y', 'Y', 'yes', 'YES']:
                 print('\nWARN: No default template configuration has been applied to the database.')
                 return -1
@@ -49,6 +49,7 @@ def setup_config(ini_params, auto_mode):
     new_config_id = bytearray()
 
     try:
+
         g2_config_mgr.addConfig(config_json, 'Configuration added from G2SetupConfig.', new_config_id)
     except G2ModuleException as ex:
         ex_info = g2_config_mgr.getLastException().split('|', 1)
