@@ -3,11 +3,9 @@
 import argparse
 import pathlib
 import sys
+
 import G2Paths
-from G2Config import G2Config
-from G2ConfigMgr import G2ConfigMgr
-from G2IniParams import G2IniParams
-from G2Exception import G2ModuleException
+from senzing import (G2Config, G2ConfigMgr, G2Exception, G2IniParams, G2ModuleException)
 
 
 def setup_config(ini_params, auto_mode):
@@ -15,7 +13,7 @@ def setup_config(ini_params, auto_mode):
     # Determine if a default/initial G2 configuration already exists
     default_config_id = bytearray()
     g2_config_mgr = G2ConfigMgr()
-    g2_config_mgr.initV2("g2ConfigMgr", ini_params, False)
+    g2_config_mgr.init("g2ConfigMgr", ini_params, False)
     g2_config_mgr.getDefaultConfigID(default_config_id)
 
     # If not in auto mode prompt user
@@ -32,7 +30,7 @@ def setup_config(ini_params, auto_mode):
 
     # Apply a default configuration
     g2_config = G2Config()
-    g2_config.initV2("g2Config", ini_params, False)
+    g2_config.init("g2Config", ini_params, False)
 
     try:
         config_handle = g2_config.create()
