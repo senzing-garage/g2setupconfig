@@ -4,10 +4,7 @@ import argparse
 import pathlib
 import sys
 import G2Paths
-from G2Config import G2Config
-from G2ConfigMgr import G2ConfigMgr
-from G2IniParams import G2IniParams
-from G2Exception import G2ModuleException
+from senzing import (G2Config, G2ConfigMgr, G2Exception, G2IniParams, G2ModuleException)
 
 
 def setup_config(ini_params, auto_mode):
@@ -15,7 +12,7 @@ def setup_config(ini_params, auto_mode):
     # Determine if a default/initial G2 configuration already exists
     default_config_id = bytearray()
     g2_config_mgr = G2ConfigMgr()
-    g2_config_mgr.initV2("g2ConfigMgr", ini_params, False)
+    g2_config_mgr.init("g2ConfigMgr", ini_params, False)
     g2_config_mgr.getDefaultConfigID(default_config_id)
 
     # If not in auto mode prompt user
@@ -26,13 +23,14 @@ def setup_config(ini_params, auto_mode):
                 print('\nWARN: Not replacing configuration in database.')
                 return -1
         else:
+
             if not input('\nInstalling template configuration to database. Do you want to continue (yes/no)?  ') in ['y', 'Y', 'yes', 'YES']:
                 print('\nWARN: No default template configuration has been applied to the database.')
                 return -1
 
     # Apply a default configuration
     g2_config = G2Config()
-    g2_config.initV2("g2Config", ini_params, False)
+    g2_config.init("g2Config", ini_params, False)
 
     try:
         config_handle = g2_config.create()
@@ -51,6 +49,7 @@ def setup_config(ini_params, auto_mode):
     new_config_id = bytearray()
 
     try:
+
         g2_config_mgr.addConfig(config_json, 'Configuration added from G2SetupConfig.', new_config_id)
     except G2ModuleException as ex:
         ex_info = g2_config_mgr.getLastException().split('|', 1)
