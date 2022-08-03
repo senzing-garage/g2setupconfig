@@ -1,11 +1,12 @@
 #! /usr/bin/env python3
 
 import argparse
+import os
 import pathlib
 import sys
 import G2Paths
-from senzing import (G2Config, G2ConfigMgr, G2Exception, G2ModuleException)
-from G2IniParams import G2IniParams
+from senzing import G2Config, G2ConfigMgr, G2Exception, G2ModuleException, G2IniParams
+#from G2IniParams import G2IniParams
 
 
 def setup_config(ini_params, auto_mode):
@@ -84,9 +85,9 @@ if __name__ == '__main__':
     argParser = argparse.ArgumentParser()
     argParser.add_argument('-c',
                            '--iniFile',
+                           dest='ini_file_name',
                            default=None,
-                           help='Path and file name of optional G2Module.ini to use.',
-                           nargs=1)
+                           help='Path and file name of optional G2Module.ini to use.')
 
     # Run in non-interactive mode for Senzing team testing
     argParser.add_argument('-a',
@@ -96,12 +97,20 @@ if __name__ == '__main__':
 
     args = argParser.parse_args()
 
-    # If ini file isn't specified try and locate it with G2Paths
-    ini_file_name = pathlib.Path(G2Paths.get_G2Module_ini_path()) if not args.iniFile else pathlib.Path(args.iniFile[0]).resolve()
-    G2Paths.check_file_exists_and_readable(ini_file_name)
+    #Check if INI file or env var is specified, otherwise use default INI file
+    iniFileName = None
 
-    # Load the G2 configuration file
-    ini_param_creator = G2IniParams()
-    ini_params = ini_param_creator.getJsonINIParams(ini_file_name)
+    if args.ini_file_name:
+        iniFileName = pathlib.Path(args.ini_file_name)
+    elif os.getenv("SENZING_ENGINE_CONFIGURATION_JSON"):
+        ini_params = os.getenv("SENZING_ENGINE_CONFIGURATION_JSON")
+    else:
+        iniFileName = pathlib.Path(G2Paths.get_G2Module_ini_path())
+
+    if iniFileName:
+        G2Paths.check_file_exists_and_readable(iniFileName)
+        iniParamCreator = G2IniParams()
+        ini_params = iniParamCreator.getJsonINIParams(iniFileName)
+
 
     sys.exit(setup_config(ini_params, args.auto))
