@@ -5,8 +5,8 @@ import os
 import pathlib
 import sys
 import G2Paths
-from senzing import G2Config, G2ConfigMgr, G2Exception, G2ModuleException, G2IniParams
-#from G2IniParams import G2IniParams
+from senzing import G2Config, G2ConfigMgr, G2Exception, G2ModuleException
+from G2IniParams import G2IniParams
 
 
 def setup_config(ini_params, auto_mode):
