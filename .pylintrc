@@ -6,6 +6,7 @@ disable=
     missing-function-docstring,
     missing-module-docstring,
     redefined-outer-name,
+    too-many-return-statements,
     unused-import,
 good-names=
     template-python
